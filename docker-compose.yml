@@ -25,14 +25,13 @@ services:
       - LABEL_DUPLICATE=${LABEL_DUPLICATE:-R60/Duplicado}
     
     volumes:
-      - /host_mnt/c/Users/techandi_royalchef/R-60 Bot-Test:/app
+      - C:/Users/techandi_royalchef/R-60 Bot-Test:/app
       - r60_logs:/app/logs
     
     restart: unless-stopped
     
     labels:
       - "com.portainer.stack=r60-bot"
-      - "com.portainer.description=Bot de procesamiento automático de formularios R-60"
 
 volumes:
   r60_logs:
