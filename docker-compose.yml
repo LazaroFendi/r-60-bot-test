@@ -4,13 +4,8 @@ services:
   r60-bot:
     image: python:3.11-slim
     container_name: r60-bot
-    working_dir: /app
     
-    command: >
-      sh -c "
-      pip install --no-cache-dir -r requirements.txt &&
-      python main.py
-      "
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
     
     environment:
       - GOOGLE_SHEET_ID=${GOOGLE_SHEET_ID}
@@ -25,16 +20,18 @@ services:
       - LABEL_DUPLICATE=${LABEL_DUPLICATE:-R60/Duplicado}
     
     volumes:
-      - C:/Users/techandi_royalchef/R-60 Bot-Test:/app
+      - r60_source:/app-source:ro
+      - r60_credentials:/app/credentials
       - r60_logs:/app/logs
+      - r60_temp:/app/temp
     
     restart: unless-stopped
-    
-    labels:
-      - "com.portainer.stack=r60-bot"
 
 volumes:
+  r60_source:
+  r60_credentials:
   r60_logs:
+  r60_temp:
 
 networks:
   default:
