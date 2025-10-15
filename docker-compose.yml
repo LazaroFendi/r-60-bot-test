@@ -2,75 +2,41 @@ version: '3.8'
 
 services:
   r60-bot:
-    build: .
-    image: r60-bot:latest
+    image: python:3.11-slim
     container_name: r60-bot
+    working_dir: /app
     
-    # Variables de entorno (se pueden sobrescribir en Portainer)
+    command: >
+      sh -c "
+      pip install --no-cache-dir -r requirements.txt &&
+      python main.py
+      "
+    
     environment:
-      # Google Sheets
       - GOOGLE_SHEET_ID=${GOOGLE_SHEET_ID}
       - GOOGLE_SHEET_NAME=${GOOGLE_SHEET_NAME:-Hoja 1}
-      
-      # Google Drive
       - GOOGLE_DRIVE_FOLDER_ID=${GOOGLE_DRIVE_FOLDER_ID}
-      
-      # Gmail
       - GMAIL_QUERY=${GMAIL_QUERY:-subject:R-60 has:attachment filename:xlsx is:unread}
       - NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL}
-      
-      # Configuración
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - MAX_EMAILS_PER_RUN=${MAX_EMAILS_PER_RUN:-10}
-      
-      # Etiquetas Gmail
       - LABEL_PROCESSED=${LABEL_PROCESSED:-R60/Procesado}
       - LABEL_ERROR=${LABEL_ERROR:-R60/Error}
       - LABEL_DUPLICATE=${LABEL_DUPLICATE:-R60/Duplicado}
     
-    # Volúmenes nombrados para persistencia
     volumes:
-      # Credenciales de Google (montaje directo desde el host)
-      - /host_mnt/c/Users/techandi_royalchef/R-60 Bot-Test/credentials:/app/credentials
-      # Logs persistentes
+      - /host_mnt/c/Users/techandi_royalchef/R-60 Bot-Test:/app
       - r60_logs:/app/logs
-      # Archivos temporales (no necesita persistencia)
-      - /app/temp
     
-    # Política de reinicio
     restart: unless-stopped
     
-    # Labels para Portainer UI
     labels:
       - "com.portainer.stack=r60-bot"
       - "com.portainer.description=Bot de procesamiento automático de formularios R-60"
-      - "com.portainer.category=automation"
-    
-    # Recursos (ajustar según necesidad)
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
-    
-    # Health check
-    healthcheck:
-      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
 
-# Volúmenes nombrados
 volumes:
   r60_logs:
-    name: r60_logs
-    driver: local
 
-# Network (opcional, por si necesitas conectar con otros servicios)
 networks:
   default:
     name: r60_network
