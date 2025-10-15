@@ -1,0 +1,98 @@
+version: '3.8'
+
+# ========================================================
+# R-60 Bot Stack para Portainer (con BUILD)
+# ========================================================
+# Este stack construye la imagen automáticamente desde el código
+
+services:
+  r60-bot:
+    # Construir imagen desde el Dockerfile local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: r60-bot
+    
+    # ========================================================
+    # VARIABLES DE ENTORNO - YA CONFIGURADAS
+    # ========================================================
+    environment:
+      # --- Google Sheets ---
+      GOOGLE_SHEET_ID: "1s1FSBHoD9lzFa_pk0zxEV8cNtkb55UradT1P3SscokU"
+      GOOGLE_SHEET_NAME: "Hoja 1"
+      
+      # --- Google Drive ---
+      GOOGLE_DRIVE_FOLDER_ID: "10SwS5qMv2bv_GZduqo9i3CRXDsFjKETm"
+      
+      # --- Gmail ---
+      GMAIL_QUERY: "subject:R-60 has:attachment filename:xlsx is:unread"
+      NOTIFICATION_EMAIL: "echanditomas@gmail.com"
+      
+      # --- Configuración ---
+      LOG_LEVEL: "INFO"
+      MAX_EMAILS_PER_RUN: "10"
+      
+      # --- Etiquetas Gmail ---
+      LABEL_PROCESSED: "R60/Procesado"
+      LABEL_ERROR: "R60/Error"
+      LABEL_DUPLICATE: "R60/Duplicado"
+    
+    # ========================================================
+    # VOLÚMENES
+    # ========================================================
+    volumes:
+      - r60_credentials:/app/credentials
+      - r60_logs:/app/logs
+      - r60_temp:/app/temp
+    
+    # Política de reinicio
+    restart: unless-stopped
+    
+    # Labels para mejor visualización en Portainer
+    labels:
+      com.portainer.stack: "r60-bot"
+      com.portainer.description: "Bot de procesamiento automático de formularios R-60"
+      com.portainer.category: "automation"
+      app.version: "1.0.0"
+      app.maintainer: "R60 Bot Team"
+    
+    # Límites de recursos (ajustar según tu servidor)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    
+    # Health check para monitoreo en Portainer
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import sys; sys.exit(0)' || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# ========================================================
+# VOLÚMENES NOMBRADOS
+# ========================================================
+volumes:
+  r60_credentials:
+    driver: local
+  
+  r60_logs:
+    driver: local
+  
+  r60_temp:
+    driver: local
+
+# ========================================================
+# NETWORK
+# ========================================================
+networks:
+  default:
+    driver: bridge
+    name: r60_network
+
+

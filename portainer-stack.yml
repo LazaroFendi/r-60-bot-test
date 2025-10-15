@@ -1,0 +1,152 @@
+version: '3.8'
+
+# ========================================================
+# R-60 Bot Stack para Portainer
+# ========================================================
+# Template optimizado para despliegue en Portainer
+# 
+# INSTRUCCIONES:
+# 1. En Portainer, ve a Stacks > Add Stack
+# 2. Pega este contenido en el editor web
+# 3. Completa las variables de entorno abajo
+# 4. Asegúrate de montar credentials.json y token.json
+# ========================================================
+
+services:
+  r60-bot:
+    # Imagen (puedes usar una pre-construida o build local)
+    image: r60-bot:latest
+    container_name: r60-bot
+    
+    # ========================================================
+    # VARIABLES DE ENTORNO - COMPLETAR CON TUS VALORES
+    # ========================================================
+    environment:
+      # --- Google Sheets ---
+      # ID de tu planilla (obtenlo de la URL de Google Sheets)
+      GOOGLE_SHEET_ID: "TU_SHEET_ID_AQUI"
+      GOOGLE_SHEET_NAME: "Hoja 1"
+      
+      # --- Google Drive ---
+      # ID de la carpeta raíz en Drive donde se archivarán los formularios
+      GOOGLE_DRIVE_FOLDER_ID: "TU_FOLDER_ID_AQUI"
+      
+      # --- Gmail ---
+      # Query para buscar emails con formularios R-60
+      GMAIL_QUERY: "subject:R-60 has:attachment filename:xlsx is:unread"
+      # Email donde recibirás las notificaciones
+      NOTIFICATION_EMAIL: "tu_email@ejemplo.com"
+      
+      # --- Configuración ---
+      LOG_LEVEL: "INFO"
+      MAX_EMAILS_PER_RUN: "10"
+      
+      # --- Etiquetas Gmail ---
+      LABEL_PROCESSED: "R60/Procesado"
+      LABEL_ERROR: "R60/Error"
+      LABEL_DUPLICATE: "R60/Duplicado"
+    
+    # ========================================================
+    # VOLÚMENES
+    # ========================================================
+    # IMPORTANTE: Debes copiar credentials.json y token.json
+    # al volumen r60_credentials antes de la primera ejecución
+    volumes:
+      - r60_credentials:/app/credentials
+      - r60_logs:/app/logs
+      - r60_temp:/app/temp
+    
+    # Política de reinicio
+    restart: unless-stopped
+    
+    # Labels para mejor visualización en Portainer
+    labels:
+      com.portainer.stack: "r60-bot"
+      com.portainer.description: "Bot de procesamiento automático de formularios R-60"
+      com.portainer.category: "automation"
+      app.version: "1.0.0"
+      app.maintainer: "R60 Bot Team"
+    
+    # Límites de recursos (ajustar según tu servidor)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    
+    # Health check para monitoreo en Portainer
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import sys; sys.exit(0)' || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# ========================================================
+# VOLÚMENES NOMBRADOS
+# ========================================================
+volumes:
+  r60_credentials:
+    driver: local
+    # Puedes especificar una ruta local en el host si prefieres
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /ruta/en/host/credentials
+  
+  r60_logs:
+    driver: local
+    # Los logs se pueden mapear a una carpeta específica del host
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /ruta/en/host/logs
+  
+  r60_temp:
+    driver: local
+    # Temporal, no necesita persistencia real
+
+# ========================================================
+# NETWORK (Opcional)
+# ========================================================
+networks:
+  default:
+    driver: bridge
+    name: r60_network
+
+# ========================================================
+# NOTAS IMPORTANTES:
+# ========================================================
+# 1. CREDENCIALES: Antes de iniciar el stack, copia tus archivos
+#    credentials.json y token.json al volumen r60_credentials
+#    
+#    Opción A (CLI):
+#      docker volume create r60_credentials
+#      docker run --rm -v r60_credentials:/data -v $(pwd)/credentials:/source alpine cp /source/credentials.json /data/
+#      docker run --rm -v r60_credentials:/data -v $(pwd)/credentials:/source alpine cp /source/token.json /data/
+#    
+#    Opción B (Portainer):
+#      - Ve a Volumes > r60_credentials > Browse
+#      - Sube credentials.json y token.json
+#
+# 2. EJECUCIÓN PERIÓDICA: Para ejecutar el bot automáticamente:
+#    
+#    Opción A (Cron en el host):
+#      Agrega a crontab: */30 * * * * docker start r60-bot
+#    
+#    Opción B (Portainer Webhook):
+#      - Configura un webhook en Portainer
+#      - Programa llamadas con un cron externo
+#
+# 3. PRIMERA EJECUCIÓN: Si no tienes token.json, ejecuta el bot
+#    una vez localmente para completar el flujo OAuth2, luego
+#    copia el token.json resultante al volumen.
+#
+# 4. MONITOREO: Usa la vista de logs de Portainer para monitorear
+#    la ejecución del bot en tiempo real.
+# ========================================================
+
+

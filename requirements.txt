@@ -1,0 +1,19 @@
+# Google APIs
+google-auth==2.29.0
+google-auth-oauthlib==1.2.0
+google-auth-httplib2==0.2.0
+google-api-python-client==2.126.0
+
+# Excel parsing
+openpyxl==3.1.2
+
+# Environment variables
+python-dotenv==1.0.1
+
+# Utilities
+python-dateutil==2.9.0
+
+# Logging
+colorlog==6.8.2
+
+
