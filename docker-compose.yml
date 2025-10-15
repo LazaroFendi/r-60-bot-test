@@ -30,8 +30,8 @@ services:
     
     # Volúmenes nombrados para persistencia
     volumes:
-      # Credenciales de Google (debe montarse desde el host)
-      - r60_credentials:/app/credentials
+      # Credenciales de Google (montaje directo desde el host)
+      - /host_mnt/c/Users/techandi_royalchef/R-60 Bot-Test/credentials:/app/credentials
       # Logs persistentes
       - r60_logs:/app/logs
       # Archivos temporales (no necesita persistencia)
@@ -66,10 +66,6 @@ services:
 
 # Volúmenes nombrados
 volumes:
-  r60_credentials:
-    name: r60_credentials
-    driver: local
-  
   r60_logs:
     name: r60_logs
     driver: local
@@ -78,5 +74,3 @@ volumes:
 networks:
   default:
     name: r60_network
-
-
