@@ -234,33 +234,10 @@ class ExcelParser:
         """
         item = {}
         
-        # Numero de ítem (siempre presente)
-        numero_col = columns_mapping.get('numero_item', 'A')
-        item['numero_item'] = self._get_cell_value(f"{numero_col}{row}")
-        
-        # Mapear campos específicos del tipo de formulario a campos genéricos
-        # Esto permite que el Sheets Service maneje todos los tipos de forma uniforme
-        
-        if self.form_type == 'COMPRAS':
-            item['campo1'] = self._get_cell_value(f"{columns_mapping.get('descripcion', 'B')}{row}")
-            item['campo2'] = self._get_cell_value(f"{columns_mapping.get('cantidad', 'C')}{row}")
-            item['campo3'] = self._get_cell_value(f"{columns_mapping.get('unidad', 'D')}{row}")
-            item['campo4'] = self._get_cell_value(f"{columns_mapping.get('precio_unitario', 'E')}{row}")
-            item['campo5'] = self._get_cell_value(f"{columns_mapping.get('total', 'F')}{row}")
-        
-        elif self.form_type == 'SERVICIOS':
-            item['campo1'] = self._get_cell_value(f"{columns_mapping.get('servicio', 'B')}{row}")
-            item['campo2'] = self._get_cell_value(f"{columns_mapping.get('proveedor', 'C')}{row}")
-            item['campo3'] = self._get_cell_value(f"{columns_mapping.get('monto', 'D')}{row}")
-            item['campo4'] = self._get_cell_value(f"{columns_mapping.get('fecha_servicio', 'E')}{row}")
-            item['campo5'] = ""  # No hay campo 5 en servicios
-        
-        elif self.form_type == 'COSTOS':
-            item['campo1'] = self._get_cell_value(f"{columns_mapping.get('concepto', 'B')}{row}")
-            item['campo2'] = self._get_cell_value(f"{columns_mapping.get('categoria', 'C')}{row}")
-            item['campo3'] = self._get_cell_value(f"{columns_mapping.get('monto', 'D')}{row}")
-            item['campo4'] = self._get_cell_value(f"{columns_mapping.get('fecha', 'E')}{row}")
-            item['campo5'] = ""  # No hay campo 5 en costos
+        # Extraer todos los campos según el mapeo del config
+        for field_name, column in columns_mapping.items():
+            cell_ref = f"{column}{row}"
+            item[field_name] = self._get_cell_value(cell_ref)
         
         return item
     

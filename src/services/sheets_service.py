@@ -212,31 +212,47 @@ class SheetsService:
         common_data = {
             'fecha_procesamiento': fecha_procesamiento,
             'numero_formulario': form_data.get('numero_formulario', ''),
-            'fecha_formulario': form_data.get('fecha', ''),
             'tipo_formulario': form_data.get('tipo_formulario', ''),
             'solicitante': form_data.get('solicitante', ''),
-            'area': form_data.get('area', ''),
-            'observaciones': form_data.get('observaciones', ''),
+            'mail_solicitante': form_data.get('mail_solicitante', ''),
+            'tel_solicitante': form_data.get('tel_solicitante', ''),
+            'autorizado_por': form_data.get('autorizado_por', ''),
+            'departamento': form_data.get('departamento', ''),
+            'lugar_entrega': form_data.get('lugar_entrega', ''),
+            'rubro': form_data.get('rubro', ''),
+            'fecha_entrega': form_data.get('fecha_entrega', ''),
             'archivo_original': form_data.get('archivo_original', '')
         }
         
         # Crear una fila por cada ítem
         for item in form_data.get('items', []):
+            # Estructura de la fila según SHEET_HEADERS en config.py:
+            # 'Fecha Procesamiento', 'Nº Formulario', 'Tipo Formulario', 'Solicitante',
+            # 'Mail Solicitante', 'Tel Solicitante', 'Autorizado Por', 'Departamento',
+            # 'Lugar Entrega', 'Rubro', 'Fecha Entrega',
+            # 'Código Polaris', 'Nº Item', 'Descripción', 'Cantidad', 'Unidad de Medida',
+            # 'Fecha Entrega Item', 'Centro de Costo', 'Archivo Original'
+            
             row = [
                 common_data['fecha_procesamiento'],          # A: Fecha Procesamiento
                 common_data['numero_formulario'],            # B: Nº Formulario
-                common_data['fecha_formulario'],             # C: Fecha Formulario
-                common_data['tipo_formulario'],              # D: Tipo Formulario
-                common_data['solicitante'],                  # E: Solicitante
-                common_data['area'],                         # F: Área
-                item.get('numero_item', ''),                 # G: Nº Item
-                item.get('campo1', ''),                      # H: Descripción/Servicio/Concepto
-                item.get('campo2', ''),                      # I: Cantidad/Proveedor/Categoría
-                item.get('campo3', ''),                      # J: Unidad/Monto
-                item.get('campo4', ''),                      # K: Precio Unitario/Fecha Servicio/Fecha
-                item.get('campo5', ''),                      # L: Total/Monto
-                common_data['observaciones'],                # M: Observaciones
-                common_data['archivo_original']              # N: Archivo Original
+                common_data['tipo_formulario'],              # C: Tipo Formulario
+                common_data['solicitante'],                  # D: Solicitante
+                common_data['mail_solicitante'],             # E: Mail Solicitante
+                common_data['tel_solicitante'],              # F: Tel Solicitante
+                common_data['autorizado_por'],               # G: Autorizado Por
+                common_data['departamento'],                 # H: Departamento
+                common_data['lugar_entrega'],                # I: Lugar Entrega
+                common_data['rubro'],                        # J: Rubro
+                common_data['fecha_entrega'],                # K: Fecha Entrega
+                item.get('codigo_polaris', ''),              # L: Código Polaris
+                item.get('numero_item', ''),                 # M: Nº Item
+                item.get('descripcion', ''),                 # N: Descripción
+                item.get('cantidad', ''),                    # O: Cantidad
+                item.get('unidad', ''),                      # P: Unidad de Medida
+                item.get('fecha_entrega', ''),               # Q: Fecha Entrega Item
+                item.get('centro_costo', ''),                # R: Centro de Costo
+                common_data['archivo_original']              # S: Archivo Original
             ]
             rows.append(row)
         

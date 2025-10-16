@@ -54,47 +54,56 @@ MAX_EMAILS_PER_RUN = int(os.getenv('MAX_EMAILS_PER_RUN', '10'))
 
 # Encabezado común para todos los tipos de formularios
 HEADER_MAPPING_COMMON = {
-    'numero_formulario': 'D2',
-    'fecha': 'D3',
-    'solicitante': 'D4',
-    'area': 'D5',
-    'observaciones': 'D6',
+    'numero_formulario': 'M7',       # Nº de formulario (esquina superior derecha)
+    'solicitante': 'C11',            # Solicitado por
+    'mail_solicitante': 'J10',       # Mail Solicitante
+    'tel_solicitante': 'J10',        # Tel Solicitante (misma fila, columna siguiente)
+    'autorizado_por': 'C14',         # Autorizado por (Referente del área)
+    'departamento': 'C16',           # Departamento/Sector Solicitante
+    'lugar_entrega': 'C18',          # Lugar de Entrega
+    'rubro': 'C20',                  # Rubro Solicitado
+    'fecha_entrega': 'N16',          # Fecha de entrega (columna derecha)
 }
 
 # Mapeo específico por tipo de formulario
 FORM_TYPE_MAPPINGS = {
     'COMPRAS': {
         'header': HEADER_MAPPING_COMMON,
-        'items_start_row': 10,  # Fila donde comienza la tabla de ítems
+        'items_start_row': 25,  # Fila donde comienza la tabla de ítems
         'items_columns': {
-            'numero_item': 'A',
-            'descripcion': 'B',
-            'cantidad': 'C',
-            'unidad': 'D',
-            'precio_unitario': 'E',
-            'total': 'F',
+            'codigo_polaris': 'B',           # Codigo Polaris
+            'numero_item': 'C',              # Item Nº
+            'descripcion': 'D',              # Descripción + Foto/Archivo / Medida
+            'cantidad': 'E',                 # Cantidad
+            'unidad': 'F',                   # Unidad de Medida
+            'fecha_entrega': 'G',            # Fecha Entrega
+            'centro_costo': 'H',             # Centro de Costo
         }
     },
     'SERVICIOS': {
         'header': HEADER_MAPPING_COMMON,
-        'items_start_row': 10,
+        'items_start_row': 25,
         'items_columns': {
-            'numero_item': 'A',
-            'servicio': 'B',
-            'proveedor': 'C',
-            'monto': 'D',
-            'fecha_servicio': 'E',
+            'codigo_polaris': 'B',
+            'numero_item': 'C',
+            'descripcion': 'D',
+            'cantidad': 'E',
+            'unidad': 'F',
+            'fecha_entrega': 'G',
+            'centro_costo': 'H',
         }
     },
     'COSTOS': {
         'header': HEADER_MAPPING_COMMON,
-        'items_start_row': 10,
+        'items_start_row': 25,
         'items_columns': {
-            'numero_item': 'A',
-            'concepto': 'B',
-            'categoria': 'C',
-            'monto': 'D',
-            'fecha': 'E',
+            'codigo_polaris': 'B',
+            'numero_item': 'C',
+            'descripcion': 'D',
+            'cantidad': 'E',
+            'unidad': 'F',
+            'fecha_entrega': 'G',
+            'centro_costo': 'H',
         }
     }
 }
@@ -112,17 +121,22 @@ FORM_TYPE_KEYWORDS = {
 SHEET_HEADERS = [
     'Fecha Procesamiento',
     'Nº Formulario',
-    'Fecha Formulario',
     'Tipo Formulario',
     'Solicitante',
-    'Área',
+    'Mail Solicitante',
+    'Tel Solicitante',
+    'Autorizado Por',
+    'Departamento',
+    'Lugar Entrega',
+    'Rubro',
+    'Fecha Entrega',
+    'Código Polaris',
     'Nº Item',
-    'Descripción/Servicio/Concepto',
-    'Cantidad/Proveedor/Categoría',
-    'Unidad/Monto',
-    'Precio Unitario/Fecha Servicio/Fecha',
-    'Total/Monto',
-    'Observaciones',
+    'Descripción',
+    'Cantidad',
+    'Unidad de Medida',
+    'Fecha Entrega Item',
+    'Centro de Costo',
     'Archivo Original'
 ]
 
