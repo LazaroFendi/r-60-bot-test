@@ -4,8 +4,16 @@ services:
   r60-bot:
     image: python:3.11-slim
     container_name: r60-bot
+    working_dir: /app
     
-    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    command: >
+      bash -c "
+      apt-get update && apt-get install -y git &&
+      git clone https://github.com/LazaroFendi/r-60-bot-test.git /tmp/repo &&
+      cp -r /tmp/repo/* /app/ &&
+      pip install --no-cache-dir -r /app/requirements.txt &&
+      python /app/main.py
+      "
     
     environment:
       - GOOGLE_SHEET_ID=${GOOGLE_SHEET_ID}
@@ -20,7 +28,6 @@ services:
       - LABEL_DUPLICATE=${LABEL_DUPLICATE:-R60/Duplicado}
     
     volumes:
-      - r60_source:/app-source:ro
       - r60_credentials:/app/credentials
       - r60_logs:/app/logs
       - r60_temp:/app/temp
@@ -28,7 +35,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  r60_source:
   r60_credentials:
   r60_logs:
   r60_temp:
