@@ -54,16 +54,16 @@ MAX_EMAILS_PER_RUN = int(os.getenv('MAX_EMAILS_PER_RUN', '10'))
 
 # Encabezado común para todos los tipos de formularios
 HEADER_MAPPING_COMMON = {
-    'numero_formulario': 'L7',       # Nº de formulario (esquina superior derecha)
+    'numero_formulario': 'L7',       # Nº de formulario (18/ 000001909090)
     'fecha_formulario': 'N7',        # Fecha del formulario
-    'solicitante': 'C11',            # Solicitado por
-    'mail_solicitante': 'J10',       # Mail Solicitante
-    'tel_solicitante': 'J10',        # Tel Solicitante (misma fila, columna siguiente)
-    'autorizado_por': 'C14',         # Autorizado por (Referente del área)
-    'departamento': 'C16',           # Departamento/Sector Solicitante
-    'lugar_entrega': 'C18',          # Lugar de Entrega
-    'rubro': 'C20',                  # Rubro Solicitado
-    'fecha_entrega': 'N16',          # Fecha de entrega (columna derecha)
+    'solicitante': 'D11',            # Solicitado por: (Tomas Sacha)
+    'mail_solicitante': 'N10',       # Mail Solicitante: (echanditomas@gmail.com)
+    'tel_solicitante': 'N11',        # Tel Solicitante: (1133852456)
+    'autorizado_por': 'D14',         # Autorizado por (Referente del área): (Pablo Peratz)
+    'departamento': 'D16',           # Departamento/Sector Solicitante: (Sistemas)
+    'lugar_entrega': 'D18',          # Lugar de Entrega: (Rolon 2345)
+    'rubro': 'D20',                  # Rubro Solicitado: (Informatica)
+    'fecha_entrega': 'N16',          # Fecha de entrega: (viernes, 10 de octubre de 2025)
 }
 
 # Mapeo específico por tipo de formulario
