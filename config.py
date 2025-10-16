@@ -54,7 +54,8 @@ MAX_EMAILS_PER_RUN = int(os.getenv('MAX_EMAILS_PER_RUN', '10'))
 
 # Encabezado común para todos los tipos de formularios
 HEADER_MAPPING_COMMON = {
-    'numero_formulario': 'M7',       # Nº de formulario (esquina superior derecha)
+    'numero_formulario': 'L7',       # Nº de formulario (esquina superior derecha)
+    'fecha_formulario': 'N7',        # Fecha del formulario
     'solicitante': 'C11',            # Solicitado por
     'mail_solicitante': 'J10',       # Mail Solicitante
     'tel_solicitante': 'J10',        # Tel Solicitante (misma fila, columna siguiente)
