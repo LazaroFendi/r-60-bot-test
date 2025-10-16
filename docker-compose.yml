@@ -14,7 +14,13 @@ services:
       git clone https://github.com/LazaroFendi/r-60-bot-test.git /tmp/repo &&
       cp -r /tmp/repo/* /app/ &&
       pip install --no-cache-dir -q -r /app/requirements.txt &&
-      python /app/main.py
+      if [ ! -f /app/credentials/credentials.json ]; then
+        echo '⚠️  credentials.json NO encontrado. Contenedor en espera...' &&
+        echo '📋 Conecta a la consola y crea el archivo credentials.json' &&
+        tail -f /dev/null
+      else
+        python /app/main.py
+      fi
       "
     
     environment:
