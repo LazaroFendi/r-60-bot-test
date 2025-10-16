@@ -91,20 +91,53 @@ class GoogleAuthenticator:
             raise CredencialesNoEncontradasError(str(config.CREDENTIALS_FILE))
         
         logger.info("Iniciando flujo de autenticación OAuth2...")
-        logger.info("Se abrirá tu navegador para autorizar la aplicación")
         
         # Iniciar flujo OAuth2
         flow = InstalledAppFlow.from_client_secrets_file(
             str(config.CREDENTIALS_FILE),
-            self.scopes
+            self.scopes,
+            redirect_uri='urn:ietf:wg:oauth:2.0:oob'
         )
         
-        # Ejecutar servidor local para callback
-        credentials = flow.run_local_server(
-            port=8080,
-            prompt='consent',
-            success_message='¡Autenticación exitosa! Puedes cerrar esta ventana.'
-        )
+        # Generar URL de autenticación manual (sin navegador)
+        auth_url, _ = flow.authorization_url(prompt='consent')
+        
+        logger.info("=" * 80)
+        logger.info("🔑 AUTORIZACIÓN REQUERIDA - SIGUE ESTOS PASOS:")
+        logger.info("=" * 80)
+        logger.info("")
+        logger.info("1. Copia esta URL COMPLETA y ábrela en tu navegador:")
+        logger.info("")
+        logger.info(auth_url)
+        logger.info("")
+        logger.info("2. Autoriza la aplicación con tu cuenta de Google")
+        logger.info("3. Google te mostrará un CÓDIGO")
+        logger.info("4. Conéctate a la consola del contenedor y ejecuta:")
+        logger.info("   echo 'CODIGO_AQUI' > /tmp/auth_code.txt")
+        logger.info("5. El bot detectará el código y completará la autenticación")
+        logger.info("")
+        logger.info("=" * 80)
+        
+        # Esperar a que el usuario cree el archivo con el código
+        import time
+        code_file = Path('/tmp/auth_code.txt')
+        logger.info("⏳ Esperando código de autorización...")
+        
+        while not code_file.exists():
+            time.sleep(5)
+        
+        # Leer el código
+        with open(code_file, 'r') as f:
+            code = f.read().strip()
+        
+        # Eliminar el archivo temporal
+        code_file.unlink()
+        
+        logger.info("✅ Código recibido. Completando autenticación...")
+        
+        # Obtener credenciales con el código
+        flow.fetch_token(code=code)
+        credentials = flow.credentials
         
         # Guardar token para futuros usos
         self._save_token(credentials)
@@ -178,5 +211,3 @@ if __name__ == "__main__":
         print(f"7. Colócalo en: {config.CREDENTIALS_DIR}/")
     except Exception as e:
         print(f"\n❌ Error inesperado: {e}")
-
-
