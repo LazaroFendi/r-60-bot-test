@@ -8,10 +8,12 @@ services:
     
     command: >
       bash -c "
-      apt-get update && apt-get install -y git &&
+      apt-get update -qq &&
+      apt-get install -y -qq git &&
+      rm -rf /tmp/repo &&
       git clone https://github.com/LazaroFendi/r-60-bot-test.git /tmp/repo &&
       cp -r /tmp/repo/* /app/ &&
-      pip install --no-cache-dir -r /app/requirements.txt &&
+      pip install --no-cache-dir -q -r /app/requirements.txt &&
       python /app/main.py
       "
     
